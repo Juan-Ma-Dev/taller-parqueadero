@@ -30,6 +30,18 @@ public class Main {
     static double recaudoMotos;
 
     public static void main(String[] args) {
+        inicializarDatos();
 
+    }
+
+    static void inicializarDatos() {
+        for (int i = 0; i < CAPACIDAD_TOTAL; i++) {
+            tipoVehiculo[i] = null;
+            fechaIngreso[i] = null;
+        }
+        celdasOcupadas = 0;
+        celdasLibres = CAPACIDAD_TOTAL;
+        recaudoCarros = 0;
+        recaudoMotos = 0;
     }
 }
