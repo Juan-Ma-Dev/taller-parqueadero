@@ -182,4 +182,37 @@ public class Main {
         imprimir(tipo + " registrado en la celda " + (celda + 1)
                 + " el " + ingreso.format(FORMATO_FECHA_HORA) + ".");
     }
+
+    static void registrarSalida() {
+        int numero = leerOpcion("Número de celda (1-" + CAPACIDAD_TOTAL + "): ", 1, CAPACIDAD_TOTAL);
+        int celda = numero - 1;
+        if (tipoVehiculo[celda] == null) {
+            imprimir("La celda " + numero + " está libre; no hay vehículo para liquidar.");
+            return;
+        }
+
+        LocalDateTime ingreso = fechaIngreso[celda];
+        LocalDateTime salida;
+        while (true) {
+            salida = leerFechaHora("Fecha y hora de salida (yyyy-MM-dd HH:mm): ");
+            if (salida.isBefore(ingreso)) {
+                imprimir("La salida no puede ser anterior al ingreso (" + ingreso.format(FORMATO_FECHA_HORA) + ").");
+            } else {
+                break;
+            }
+        }
+
+        String tipo = tipoVehiculo[celda];
+        double total = liquidar(numero, tipo, ingreso, salida);
+
+        if (tipo.equals(CARRO)) {
+            recaudoCarros += total;
+        } else {
+            recaudoMotos += total;
+        }
+        tipoVehiculo[celda] = null;
+        fechaIngreso[celda] = null;
+        celdasOcupadas--;
+        celdasLibres++;
+    }
 }
