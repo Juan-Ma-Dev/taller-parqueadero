@@ -1,5 +1,6 @@
 package app;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -214,5 +215,46 @@ public class Main {
         fechaIngreso[celda] = null;
         celdasOcupadas--;
         celdasLibres++;
+    }
+
+    static long contarDiasCompletos(LocalDateTime ingreso, LocalDateTime salida) {
+        return ChronoUnit.DAYS.between(ingreso, salida);
+    }
+
+    static long calcularHorasRestantes(LocalDateTime cursor, LocalDateTime salida) {
+        long minutosRestantes = Duration.between(cursor, salida).toMinutes();
+        return (minutosRestantes + 59) / 60;
+    }
+
+    static long liquidar(int numeroCelda, String tipo, LocalDateTime ingreso, LocalDateTime salida) {
+        double tarifaDia = tipo.equals(CARRO) ? TARIFA_DIA_CARRO : TARIFA_DIA_MOTO;
+        double tarifaHora = tipo.equals(CARRO) ? TARIFA_HORA_CARRO : TARIFA_HORA_MOTO;
+
+        long diasACobrar = contarDiasCompletos(ingreso, salida);
+        LocalDateTime cursor = ingreso.plusDays(diasACobrar);
+        long horasACobrar = calcularHorasRestantes(cursor, salida);
+
+        if (horasACobrar >= UMBRAL_HORAS_DIA) {
+            diasACobrar++;
+            horasACobrar = 0;
+        }
+
+        double subtotalDias = diasACobrar * tarifaDia;
+        double subtotalHoras = horasACobrar * tarifaHora;
+        double total = subtotalDias + subtotalHoras;
+
+        imprimir("FACTURA");
+        imprimir("Celda liberada: " + numeroCelda);
+        imprimir("Vehículo: " + tipo);
+        imprimir("Ingreso: " + ingreso.format(FORMATO_FECHA_HORA));
+        imprimir("Salida: " + salida.format(FORMATO_FECHA_HORA));
+        if (diasACobrar > 0) {
+            imprimir("Días: " + diasACobrar + " x $" + tarifaDia + " = $" + subtotalDias);
+        }
+        if (horasACobrar > 0) {
+            imprimir("Horas: " + horasACobrar + " x $" + tarifaHora + " = $" + subtotalHoras);
+        }
+        imprimir("TOTAL A PAGAR: $" + total);
+        return (long) total;
     }
 }
