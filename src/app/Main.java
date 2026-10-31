@@ -257,4 +257,17 @@ public class Main {
         imprimir("TOTAL A PAGAR: $" + total);
         return (long) total;
     }
+
+    static void reporteOcupacion() {
+        imprimir("Reporte de ocupación");
+        imprimir("Celdas ocupadas: " + celdasOcupadas);
+        imprimir("Celdas libres: " + celdasLibres);
+    }
+
+    static void reporteFinanciero() {
+        imprimir("Reporte financiero");
+        imprimir("Recaudo carros: $" + recaudoCarros);
+        imprimir("Recaudo motos: $" + recaudoMotos);
+        imprimir("Total general: $" + (recaudoCarros + recaudoMotos));
+    }
 }
